@@ -1,0 +1,44 @@
+* {
+   font-family: 'Cairo', sans-serif;
+}
+
+.error{
+   color:red;
+}
+
+.principal {
+   min-height: 100vh;
+   display: flex;
+   align-items: start;
+}
+
+.form-control:focus {
+   outline: none !important;
+   border-color: transparent;
+   box-shadow: none !important;
+   border: 1px solid #CED4DA;
+}
+
+table.dataTable {
+   width: 100% !important;
+}
+
+#loader {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 10000;
+  background: #191f26 url(../img/loading.gif) no-repeat center center; 
+}
+
+.btn {
+   padding: 5px;
+   margin-top: auto;
+   margin-bottom: auto;
+   margin-left: 10px;
+   margin-right: 10px;
+}

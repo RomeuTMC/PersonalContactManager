@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280, initial-scale=1.0">
+    <title>Personal Contact Manager - 1.0.0</title>
+    <link href="https://fonts.googleapis.com/css?family=Cairo:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.min.css" integrity="sha256-F+DaKAClQut87heMIC6oThARMuWne8+WzxIDT7jXuPA=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <link href="./css/global.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.7.2/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha256-Kg2zTcFO9LXOc7IwcBx1YeUBJmekycsnTsq2RuFHSZU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js" integrity="sha256-t5ZQTZsbQi8NxszC10CseKjJ5QeMw5NINtOXQrESGSU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha256-hJ44ymhBmRPJKIaKRf3DSX5uiFEZ9xB/qx8cNbJvIMU=" crossorigin="anonymous"></script>
+    <script>
+        function SalvaContato(){
+            var settings = {
+                "url": "https://contacts.brasap.com.br/ATV2/contato/",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Basic cm9tZXVAdGVzdGUuY29tOjEwMjAzMDQw",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Cookie": "__cfduid=d1c1bb5cf02169aee2b7a3657e75e641b1605205684"
+                },
+                "data": $("#NovoContato").serialize(),
+            };
+            $('#loader').show();
+            $.ajax(settings).done(function (response) {
+                $('#loader').hide();
+                        Swal.fire({
+                            title: "ERRO!",
+                            text: response.erro,
+                            icon: "info",
+                            showCancelButton: false,
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'Ok'
+                        });
+                        window.location.href = "index.htm";
+            });
+        }
+
+        $(document).ready(function () {
+              $('#addTelefone').click(function () {
+                // Create clone of <div class='input-form'>
+                $('.input-form:last').clone()
+                  .find("input:text").val("").end()
+                  .appendTo('.input-form:last');
+              });
+            });
+        
+            $(document).ready(function () {
+              $('#addMail').click(function () {
+                // Create clone of <div class='input-form'>
+                $('.input-form-mail:last').clone()
+                  .find("input:text").val("").end()
+                  .appendTo('.input-form-mail:last');
+              });
+            });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div id="loader"></div>
+    <div class="content-wrapper">
+         <div class="container-fluid">
+             <!-- CONTEUDO CENTRAL -->
+             <H1>Personal Contact Manager 1.0</h1>
+                <hr>
+                <h2>Preencha os Dados do Contato</h2>
+                <hr>
+                <form name="NovoContato" id="NovoContato">
+                    <div class="form-group">
+                        <label class="col-form-label">Nome Completo:</label>
+                        <input type="text" class="form-control" name="sNomeCompleto" id="NomeCompleto" value="" placeholder='Digite o nome completo'>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Observações:</label>
+                        <textarea class="form-control" id="Observacao" name="tObservacao" value="" wrap="hard" cols=80></textarea>
+                    </div>
+                    <fieldset class="telefones">
+                        <legend>Telefones:</legend>
+                        <div class="input-form">
+                            <div class="form-group">
+                                <div class="form-row p-2">
+                                    <div class="col">
+                                    <input type="text" class="form-control" name='aFone[]'>
+                                    </div>
+                                    <div class="col">
+                                    <select name="aTipoFone[]">
+                                        <option value='1'>Residencial</option>
+                                        <option value='2'>Comercial</option>
+                                        <option value='3'>Celular</option>
+                                        <option value='4'>WhatsApp</option>
+                                        <option value='5'>Recado</option>
+                                        <option value='6'>Outros</option>
+                                    </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </fieldset>
+                        <div class="p-2">
+                            <input type='button' class="btn btn-secondary" id='addTelefone' value='Novo Telefone'>
+                        </div>
+                        <fieldset class="Emails">
+                            <legend>E-Mails:</legend>
+                            <div class="input-form-mail">
+                                <div class="form-group">
+                                    <div class="form-row p-2">
+                                        <div class="col">
+                                        <input type="email" class="form-control" name='aEmail[]'>
+                                        </div>
+                                        <div class="col">
+                                        <select name="aTipoEmail[]">
+                                            <option value='1'>Residencial</option>
+                                            <option value='2'>Comercial</option>
+                                            <option value='3'>Outros</option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </fieldset> 
+                            <div class="p-2">
+                                <input type='button' class="btn btn-secondary" id='addMail' value='Novo Email'>
+                            </div>
+                        <button id="submit" type="button" class="btn btn-primary w-100" onclick='SalvaContato()'>Salvar</button>
+                </form>
+         </div>
+    </div>
+</body>
+</html>
+<!-- $('#loader').show(); -->

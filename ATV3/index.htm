@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280, initial-scale=1.0">
+    <title>Personal Contact Manager - 1.0.0</title>
+    <link href="https://fonts.googleapis.com/css?family=Cairo:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.min.css" integrity="sha256-F+DaKAClQut87heMIC6oThARMuWne8+WzxIDT7jXuPA=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <link href="./css/global.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.7.2/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha256-Kg2zTcFO9LXOc7IwcBx1YeUBJmekycsnTsq2RuFHSZU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js" integrity="sha256-t5ZQTZsbQi8NxszC10CseKjJ5QeMw5NINtOXQrESGSU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha256-hJ44ymhBmRPJKIaKRf3DSX5uiFEZ9xB/qx8cNbJvIMU=" crossorigin="anonymous"></script>
+    <script>
+        function close_erro() {
+            var x = document.getElementById("derro");
+            x.style.display = "none";
+        }
+        
+        function LoadTable() {
+            $('#ContatoList').DataTable({
+            language: {
+                url: './js/DT-pt-br.json'
+            },
+            "columns": [null, {
+                "orderable": true,
+                "searchable": true
+            }, null]
+            })
+        }
+
+        function APIListContato() {
+            $('#loader').show();
+            $("#ListaContatoBody").empty();
+            var settings = {
+                "url": "https://contacts.brasap.com.br/ATV2/contato/",
+                "method": "GET",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Basic cm9tZXVAdGVzdGUuY29tOjEwMjAzMDQw"
+                },
+            };
+            $.ajax(settings).done(function (response) {
+                $('#loader').hide();
+                if(response.status!='200'){
+                    Swal.fire({
+                        title: "Atenção!",
+                        text: response.erro,
+                        icon: "info",
+                        showCancelButton: false,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Ok'
+                    });
+                } else {
+                    $.each(response.DATA, function(i, item) {
+                        $('<tr>').append(
+                            $('<td>').text(item.nId),
+                            $('<td>').text(item.sNomeCompleto),
+                            $('<td>').html('<a href="vercontato.htm#'+item.nId+'" class="btn btn-primary">VISUALIZAR</a>'+
+                                '<a href="#" class="btn btn-danger" onclick="DeleteContato('+item.nId+',\''+item.sNomeCompleto+'\');">EXCLUIR</a>')
+                         ).appendTo('#ContatoList');
+                    });
+                }
+                LoadTable();
+            });
+        }
+
+        function DeleteContato(id, msg) {
+            Swal.fire({
+                title: "Confirmar Exclusão?",
+                html: "<b>ID:" + id + " - " + msg + "</b><br><br>Será excluido o CONTATO. Confirma?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonText: "Cancelar",
+                confirmButtonText: 'Confirmar!'
+            })
+            .then((result) => {
+                if (result.value) {
+                    var settings = {
+                        "url": "https://contacts.brasap.com.br/ATV2/contato/"+id,
+                        "method": "DELETE",
+                        "timeout": 0,
+                        "headers": {
+                            "Authorization": "Basic cm9tZXVAdGVzdGUuY29tOjEwMjAzMDQw"
+                        },
+                    };
+                    $('#loader').show();
+                    $.ajax(settings).done(function (response) {
+                        $('#loader').hide();
+                        Swal.fire({
+                            title: "Atenção!",
+                            text: response.erro,
+                            icon: "info",
+                            showCancelButton: false,
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'Ok'
+                        });
+                        console.log(response);
+                        APIListContato();
+                    });
+                }
+            });
+        }
+
+    </script>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div id="loader"></div>
+    <div class="content-wrapper">
+         <div class="container-fluid">
+             <!-- CONTEUDO CENTRAL -->
+             <H1>Personal Contact Manager 1.0</h1>
+                <hr>
+                <a href='NovoContato.htm' class="btn btn-primary">Criar Novo Contato</a>
+                <hr>
+                <div class="table-responsive w-100" id="DivEvento">
+                    <table class="table table-hover" id="ContatoList">
+                      <thead>
+                        <tr class="table-primary">
+                          <th style="width:5%;">#ID</th>
+                          <th style="width:10%;">Nome</th>
+                          <th style="width:25%;">OPÇÕES</th>
+                        </tr>
+                      </thead>
+                      <tbody id="ListaContatoBody">
+                      </tbody>
+                    </table>
+                    <script>APIListContato();</script>
+                  </div>
+         </div>
+    </div>
+</body>
+</html>
+<!-- $('#loader').show(); -->
