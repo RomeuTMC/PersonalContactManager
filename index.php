@@ -11,6 +11,7 @@
 
     <h2>Atividade 2</h2>
     <p>Conforme proposto, segue a DOCUMENTAÇÃO da API, que possui todos os detalhes e exemplos de acesso em algumas linguagens. <a href='https://documenter.getpostman.com/view/10563936/TVengUnm'>CLIQUE AQUI.</a><br>
+    	Para visualizar o projeto no GitHub <a href="https://github.com/RomeuTMC/PersonalContactManager">CLIQUE AQUI</a>
 
     <h2>Atividade 3</h2>
     <p>Conforme proposto, segue o acesso ao sistema, desenvolvido em HTML/JavaScript/CSS <a href='ATV3'>CLIQUE AQUI.</a><br>
